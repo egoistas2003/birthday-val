@@ -25,6 +25,8 @@
       background: #0D0A0B;
       color: #F5F0EB;
       overflow-x: hidden;
+      overscroll-behavior: none;
+      /* ← añade esto */
       -webkit-overflow-scrolling: touch
     }
 
@@ -96,25 +98,6 @@
       z-index: 0;
       background: rgba(15, 10, 10, .72);
     }
-
-    /* .bg-georgia::before {
-      content: '';
-      position: absolute;
-      inset: 0;
-      z-index: 0;
-      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100'%3E%3Crect width='100' height='100' fill='white'/%3E%3Crect x='45' y='0' width='10' height='100' fill='%23DA291C'/%3E%3Crect x='0' y='45' width='100' height='10' fill='%23DA291C'/%3E%3Crect x='20' y='8' width='5' height='30' fill='%23DA291C'/%3E%3Crect x='8' y='20' width='30' height='5' fill='%23DA291C'/%3E%3Crect x='75' y='8' width='5' height='30' fill='%23DA291C'/%3E%3Crect x='63' y='20' width='30' height='5' fill='%23DA291C'/%3E%3Crect x='20' y='63' width='5' height='30' fill='%23DA291C'/%3E%3Crect x='8' y='75' width='30' height='5' fill='%23DA291C'/%3E%3Crect x='75' y='63' width='5' height='30' fill='%23DA291C'/%3E%3Crect x='63' y='75' width='30' height='5' fill='%23DA291C'/%3E%3C/svg%3E");
-      background-size: 100% 100%;
-      background-repeat: no-repeat;
-    }
-
-    /* Dark overlay so text is readable — keeps flag colors visible */
-    /* .bg-georgia::after {
-      content: '';
-      position: absolute;
-      inset: 0;
-      z-index: 0;
-      background: rgba(15, 10, 10, .55);
-    } */
 
     .georgia-flag-svg {
       position: absolute;
@@ -715,7 +698,7 @@
   <!-- ═══════════ 2. INTRO ═══════════ -->
   <div class="s bg-wine">
     <div class="card rv">
-      <div class="st blush">Hoy 26 de junio, cumples 23 años!</div>
+      <div class="st blush">Hoy 26 de junio cumples 23 años!</div>
       <p>He preparado esta felicitación interactiva, <br>como regalo de cumpleaños</p>
     </div>
   </div>
@@ -915,7 +898,7 @@
     <div class="glow" style="background:rgba(201,168,76,.12);top:30%;left:25%"></div>
     <div class="card rv">
       <div class="st peach">El futuro</div>
-      <p>Solo tú y tú disciplina son las causantes de que puedas hablar español tan bien en tan poco tiempo.
+      <p>Solo tú y tu disciplina son las causantes de que puedas hablar español tan bien en tan poco tiempo.
         Desde aquí puedo sentir el gran amor que tienes por el país y su cultura.
         Estoy seguro que te adaptarás muy rápido y te encantará vivir aquí.
       </p>
@@ -938,7 +921,6 @@
         год принесёт тебе всё, что ты заслуживаешь. Надеюсь, что смогу обнять тебя очень скоро.</p>
     </div>
   </div>
-
   <script>
     // ── Scroll reveal ──
     const obs = new IntersectionObserver(entries => {
@@ -950,9 +932,9 @@
     const start = new Date('2025-07-25');
     const today = new Date();
     const days = Math.floor((today - start) / (1000 * 60 * 60 * 24));
-    document.getElementById('counter').textContent = days + ' días desde que nos conocímos';
+    document.getElementById('counter').textContent = days + ' días desde que nos conocimos';
 
-    // ── Music: play on first scroll ──
+    // ── Music: play on first touchstart/scroll ──
     let musicStarted = false;
     let musicPlaying = false;
     const audio = document.getElementById('bgMusic');
@@ -965,54 +947,30 @@
       audio.volume = 0;
       audio.play().then(() => {
         musicPlaying = true;
-        // Fade in
         let v = 0;
         const fade = setInterval(() => {
           v = Math.min(v + 0.02, 0.45);
           audio.volume = v;
           if (v >= 0.45) clearInterval(fade);
         }, 80);
-        // Show notice
         notice.classList.add('show');
         setTimeout(() => notice.classList.remove('show'), 3500);
-        // Show toggle button
         toggleBtn.classList.add('show');
         toggleBtn.textContent = '♫';
       }).catch(() => {
-        // Autoplay blocked — try again on next interaction
         musicStarted = false;
       });
     }
 
-    // Primary trigger: scroll
-    window.addEventListener('scroll', function onFirstScroll() {
-      startMusic();
-      if (musicStarted) {
-        window.removeEventListener('scroll', onFirstScroll);
-      }
-    }, { passive: true });
-
-    // Fallback: touch/click (for iOS Safari which may block scroll-triggered audio)
     document.addEventListener('touchstart', startMusic, { once: true });
-    document.addEventListener('click', function (e) {
-      if (e.target === toggleBtn) return; // handled separately
-      startMusic();
-    }, { once: true });
+    window.addEventListener('scroll', startMusic, { once: true, passive: true });
 
-    // Toggle button
     toggleBtn.addEventListener('click', () => {
-      if (!musicStarted) {
-        startMusic();
-        return;
-      }
+      if (!musicStarted) { startMusic(); return; }
       if (musicPlaying) {
-        audio.pause();
-        musicPlaying = false;
-        toggleBtn.textContent = '✕';
+        audio.pause(); musicPlaying = false; toggleBtn.textContent = '✕';
       } else {
-        audio.play();
-        musicPlaying = true;
-        toggleBtn.textContent = '♫';
+        audio.play(); musicPlaying = true; toggleBtn.textContent = '♫';
       }
     });
 
