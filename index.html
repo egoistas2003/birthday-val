@@ -298,12 +298,13 @@
       font-weight: 600
     }
 
-    .dot-line {
-      flex: 1;
-      min-width: 40px;
-      height: 1px;
-      border-top: 2px dashed rgba(255, 255, 255, .15)
-    }
+.dot-line {
+  flex: 1;
+  min-width: 20px;
+  max-width: 60px;
+  height: 1px;
+  border-top: 2px dashed rgba(255, 255, 255, .15)
+}
 
     .km {
       background: rgba(255, 255, 255, .06);
@@ -616,9 +617,10 @@
         font-size: clamp(6rem, 18vw, 10rem)
       }
 
-      .map-v {
-        gap: 8px
-      }
+.map-v {
+  gap: 8px;
+  flex-wrap: nowrap
+}
 
       .city {
         font-size: 1rem
